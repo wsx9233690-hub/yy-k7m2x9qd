@@ -1,0 +1,46 @@
+<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>YENYANG｜營建管理平台</title>
+<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="YENYANG"><meta name="theme-color" content="#F7F4EF">
+<style>
+:root{--bg:#F7F4EF;--ink:#1C1A17;--mut:#7A7067;--acc:#C15F3C;--line:#E3DBCF}
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:"Noto Sans TC","PingFang TC",sans-serif;letter-spacing:.06em}
+#app{position:fixed;inset:0;border:0;width:100%;height:100%;display:none;background:var(--bg)}
+.pg{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:env(safe-area-inset-top) 28px env(safe-area-inset-bottom)}
+.lg{width:56px;height:56px;position:relative}.lg i{position:absolute;inset:-14px;border-radius:50%;border:1px solid var(--acc);animation:r 2.4s ease-out infinite}.lg i+i{animation-delay:1.2s}
+@keyframes r{0%{transform:scale(.8);opacity:.55}100%{transform:scale(1.5);opacity:0}}
+h1{font-size:17px;font-weight:300;letter-spacing:.18em;margin:34px 0 8px}.m{font-size:12px;color:var(--mut);font-weight:300;text-align:center;line-height:1.9}
+.btn{margin-top:34px;height:52px;width:min(320px,100%);border-radius:14px;border:1px solid #D9D0C3;background:#fff;display:flex;align-items:center;justify-content:center;gap:10px;font:inherit;font-size:15px;color:var(--ink);text-decoration:none;letter-spacing:.12em}
+.ft{position:fixed;bottom:calc(14px + env(safe-area-inset-bottom));font-size:10px;color:#A39A8F;letter-spacing:.14em}
+@media (prefers-reduced-motion:reduce){.lg i{animation:none}}
+</style></head><body>
+<div class="pg" id="pg">
+ <div class="lg"><i></i><i></i><img src="icon-192.png" alt="" width="56" height="56" style="border-radius:14px"></div>
+ <h1 id="t">正在確認身分</h1><div class="m" id="m">約 1～2 秒</div>
+ <a class="btn" id="b" href="#" style="display:none"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="6" fill="#06C755"/><path d="M12 5.5c-3.9 0-7 2.4-7 5.4 0 2.7 2.5 5 5.8 5.4l-.4 2.1c-.1.4.3.6.6.4l2.9-2.1c3-.4 5.1-2.7 5.1-5.8 0-3-3.1-5.4-7-5.4z" fill="#fff"/></svg>使用 LINE 登入</a>
+ <div class="ft">© YENYANG　版權所有・試用版</div>
+</div>
+<iframe id="app" title="YENYANG 營建管理平台" allow="fullscreen"></iframe>
+<script>
+var GAS="https://script.google.com/macros/s/AKfycbw7Sii_8LK8Uy9GZ6Fq7M3D4FxJ6oxnGEyYfiWIulsBQTtIYpmJWmj1yUyBUYP2WJWmlg/exec";
+var LINE_ID="2012266017";                   // 公開的 Channel ID（不是密鑰）
+var HERE=location.origin+location.pathname.replace(/index\.html$/,""); // 這個外殼的網址＝LINE 回呼網址
+var K="yySess",KS="yySt";function get(k){try{return localStorage.getItem(k)||""}catch(e){return""}}function put(k,v){try{v?localStorage.setItem(k,v):localStorage.removeItem(k)}catch(e){}}
+function exp(t){try{var b=t.split(".")[0].replace(/-/g,"+").replace(/_/g,"/");return JSON.parse(decodeURIComponent(escape(atob(b)))).e||0}catch(e){return 0}}
+function $(i){return document.getElementById(i)}
+function login(msg){$("t").textContent="YENYANG 營建管理平台";$("m").textContent=msg||"第一次登入由建案管理者核准・登入保留 30 天";
+ var st="shell."+Math.random().toString(36).slice(2)+Date.now().toString(36);put(KS,st);
+ $("b").href="https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id="+LINE_ID+"&redirect_uri="+encodeURIComponent(HERE)+"&state="+st+"&scope=profile%20openid";$("b").style.display="flex"}
+function goApp(t){$("t").textContent="正在開啟平台";$("m").textContent="約 2～4 秒";$("b").style.display="none";var f=$("app");f.onload=function(){f.style.display="block";$("pg").style.display="none"};f.src=GAS+"?view=portal&shell=1&tk="+encodeURIComponent(t)}
+window.addEventListener("message",function(e){var h="";try{h=new URL(e.origin).hostname}catch(_){return}if(!/\.googleusercontent\.com$/.test(h))return;var d=e.data||{};
+ if(d.yy==="logout"||d.yy==="relogin"){put(K,"");$("app").style.display="none";$("pg").style.display="flex";login(d.yy==="logout"?"已登出。":"登入已失效，請重新登入。")}});
+(function(){var q=new URLSearchParams(location.search);
+ if(q.get("code")){var st=get(KS);put(KS,"");history.replaceState(null,"",HERE);
+  if(!st||q.get("state")!==st){login("登入逾時，請再按一次。");return}
+  fetch(GAS+"?shellx="+encodeURIComponent(q.get("code"))+"&ru="+encodeURIComponent(HERE)).then(function(r){return r.json()}).then(function(r){if(r&&r.ok&&r.tok){put(K,r.tok);goApp(r.tok)}else login("登入失敗，請再試一次。")}).catch(function(){login("網路不穩，請再試一次。")});return}
+ if(q.get("error")){history.replaceState(null,"",HERE);login("已取消登入。");return}
+ var t=get(K);if(t&&exp(t)>Date.now())goApp(t);else{put(K,"");login()}})();
+if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js").catch(function(){});
+</script></body></html>
