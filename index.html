@@ -17,8 +17,9 @@ h1{font-size:17px;font-weight:300;letter-spacing:.18em;margin:34px 0 8px}.m{font
 .pw{margin-top:22px;width:min(320px,100%)}.pr{display:flex;gap:10px;margin-top:10px}
 .pr input{flex:1;min-width:0;height:52px;border-radius:14px;border:1px solid #D9D0C3;background:#fff;font:inherit;font-size:22px;font-weight:300;letter-spacing:.3em;text-align:center;color:var(--ink);outline:none}.pr input:focus{border-color:var(--acc)}
 .pr button{height:52px;padding:0 20px;border-radius:14px;border:0;background:var(--acc);color:#fff;font:inherit;font-size:15px;letter-spacing:.12em}
+.pg.q{overflow:hidden}.pg.q>*{display:none}.pg.q:before{content:"";position:fixed;top:env(safe-area-inset-top);left:0;height:2px;width:40%;background:var(--acc);opacity:.7;animation:ld 1.4s ease-in-out infinite}@keyframes ld{0%{transform:translateX(-100%)}100%{transform:translateX(250%)}}
 .ft{position:fixed;bottom:calc(14px + env(safe-area-inset-bottom));font-size:10px;color:#A39A8F;letter-spacing:.14em}
-@media (prefers-reduced-motion:reduce){.lg i{animation:none}}
+@media (prefers-reduced-motion:reduce){.lg i,.pg.q:before{animation:none}}
 </style></head><body>
 <div class="pg" id="pg">
  <div class="lg"><i></i><i></i><img src="icon-192.png" alt="" width="56" height="56" style="border-radius:14px"></div>
@@ -43,10 +44,10 @@ function rnd(){var a=new Uint8Array(16);crypto.getRandomValues(a);var s="";for(v
 // 這次登入的代號：只存在這個 App 裡，10 分鐘內重複使用（從 LINE 回來時畫面重開也還認得）
 function sid(){var v=get(KS).split("|");if(/^[a-f0-9]{32}$/.test(v[0])&&Date.now()-(+v[1]||0)<6e5)return v[0];var s=rnd();put(KS,s+"|"+Date.now());put(KW,"");return s}
 function done(t){put(KS,"");put(KW,"");put(K,t);goApp(t)}
-function login(msg){$("t").textContent="YENYANG 營建管理平台";$("m").textContent=msg||"第一次登入由建案管理者核准・登入保留 30 天";$("pn").style.display="none";
+function login(msg){$("pg").className="pg";$("t").textContent="YENYANG 營建管理平台";$("m").textContent=msg||"第一次登入由建案管理者核准・登入保留 30 天";$("pn").style.display="none";
  var s=sid();$("b").href="https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id="+LINE_ID+"&redirect_uri="+encodeURIComponent(HERE)+"&state=shell."+s+"&scope=profile%20openid";$("b").style.display="flex";
  $("pw").style.display=get(KW)===s?"block":"none"}
-function goApp(t){$("t").textContent="正在開啟平台";$("m").textContent="約 2～4 秒";$("b").style.display="none";$("pw").style.display="none";$("pn").style.display="none";var f=$("app");f.onload=function(){f.style.display="block";$("pg").style.display="none"};f.src=GAS+"?view=portal&shell=1&tk="+encodeURIComponent(t)}
+function goApp(t){$("pg").className="pg q";$("b").style.display="none";$("pw").style.display="none";$("pn").style.display="none";var f=$("app");f.onload=function(){f.style.display="block";$("pg").style.display="none"};f.src=GAS+"?view=portal&shell=1&tk="+encodeURIComponent(t)}
 function pinGo(){var p=$("pi").value.replace(/\D/g,"");if(p.length!==6){$("pm").textContent="請輸入 6 位數字";return}
  $("pm").textContent="確認中…";fetch(GAS+"?shellp="+sid()+"&pin="+p).then(function(r){return r.json()}).then(function(r){
   if(r&&r.ok&&r.tok){done(r.tok);return}
