@@ -47,7 +47,8 @@ function done(t){put(KS,"");put(KW,"");put(K,t);goApp(t)}
 function login(msg){$("pg").className="pg";$("t").textContent="YENYANG 營建管理平台";$("m").textContent=msg||"第一次登入由建案管理者核准・登入保留 30 天";$("pn").style.display="none";
  var s=sid();$("b").href="https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id="+LINE_ID+"&redirect_uri="+encodeURIComponent(HERE)+"&state=shell."+s+"&scope=profile%20openid";$("b").style.display="flex";
  $("pw").style.display=get(KW)===s?"block":"none"}
-function goApp(t){$("pg").className="pg q";$("b").style.display="none";$("pw").style.display="none";$("pn").style.display="none";var f=$("app");f.onload=function(){f.style.display="block";$("pg").style.display="none"};f.src=GAS+"?view=portal&shell=1&tk="+encodeURIComponent(t)}
+function nav(u){$("pg").className="pg q";$("pg").style.display="flex";$("b").style.display="none";$("pw").style.display="none";$("pn").style.display="none";var f=$("app");f.style.display="none";f.onload=function(){f.style.display="block";$("pg").style.display="none"};f.src=u}
+function goApp(t){nav(GAS+"?view=portal&shell=1&tk="+encodeURIComponent(t))}
 function pinGo(){var p=$("pi").value.replace(/\D/g,"");if(p.length!==6){$("pm").textContent="請輸入 6 位數字";return}
  $("pm").textContent="確認中…";fetch(GAS+"?shellp="+sid()+"&pin="+p).then(function(r){return r.json()}).then(function(r){
   if(r&&r.ok&&r.tok){done(r.tok);return}
@@ -56,6 +57,8 @@ function pinGo(){var p=$("pi").value.replace(/\D/g,"");if(p.length!==6){$("pm").
 $("b").addEventListener("click",function(){put(KW,sid());setTimeout(function(){$("pw").style.display="block";$("pm").textContent=""},800)});
 $("pb").addEventListener("click",pinGo);$("pi").addEventListener("keydown",function(e){if(e.key==="Enter")pinGo()});
 window.addEventListener("message",function(e){var h="";try{h=new URL(e.origin).hostname}catch(_){return}if(!/\.googleusercontent\.com$/.test(h))return;var d=e.data||{};
+ if(d.yy==="home"){var t=get(K);if(t&&exp(t)>Date.now())goApp(t);else{put(K,"");$("app").style.display="none";$("pg").style.display="flex";login("登入已失效，請重新登入。")}return}
+ if(d.yy==="open"&&typeof d.url==="string"&&d.url.indexOf("https://script.google.com/macros/s/")===0){var u=d.url+(d.url.indexOf("?")<0?"?":"&")+"shell=1";if(d.url.indexOf(GAS)===0)u+="&tk="+encodeURIComponent(get(K));nav(u);return}
  if(d.yy==="logout"||d.yy==="relogin"){put(K,"");$("app").style.display="none";$("pg").style.display="flex";login(d.yy==="logout"?"已登出。":"登入已失效，請重新登入。")}});
 (function(){var q=new URLSearchParams(location.search);
  if(q.get("code")){var code=q.get("code"),s=String(q.get("state")||"").replace(/^shell\./,""),mine=get(KS).split("|")[0];history.replaceState(null,"",HERE);
