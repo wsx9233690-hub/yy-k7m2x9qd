@@ -9,67 +9,91 @@
 *{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:"Noto Sans TC","PingFang TC",sans-serif;letter-spacing:.06em}
 #app{position:fixed;inset:0;border:0;width:100%;height:100%;display:none;background:var(--bg)}
 .pg{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:env(safe-area-inset-top) 28px env(safe-area-inset-bottom)}
-.lg{width:56px;height:56px;position:relative}.lg i{position:absolute;inset:-14px;border-radius:50%;border:1px solid var(--acc);animation:r 2.4s ease-out infinite}.lg i+i{animation-delay:1.2s}
+.v{display:none;flex-direction:column;align-items:center;width:100%;text-align:center}
+.lg{width:56px;height:56px;position:relative;margin-bottom:26px}.lg img{border-radius:14px;display:block}.lg i{position:absolute;inset:-14px;border-radius:50%;border:1px solid var(--acc);animation:r 2.4s ease-out infinite}.lg i+i{animation-delay:1.2s}
 @keyframes r{0%{transform:scale(.8);opacity:.55}100%{transform:scale(1.5);opacity:0}}
-h1{font-size:17px;font-weight:300;letter-spacing:.18em;margin:34px 0 8px}.m{font-size:12px;color:var(--mut);font-weight:300;text-align:center;line-height:1.9}
-.btn{margin-top:34px;height:52px;width:min(320px,100%);border-radius:14px;border:1px solid #D9D0C3;background:#fff;display:flex;align-items:center;justify-content:center;gap:10px;font:inherit;font-size:15px;color:var(--ink);text-decoration:none;letter-spacing:.12em}
-.pn{margin-top:26px;font-size:40px;font-weight:300;letter-spacing:.32em;padding-left:.32em;color:var(--ink);font-variant-numeric:tabular-nums}
-.pw{margin-top:22px;width:min(320px,100%)}.pr{display:flex;gap:10px;margin-top:10px}
-.pr input{flex:1;min-width:0;height:52px;border-radius:14px;border:1px solid #D9D0C3;background:#fff;font:inherit;font-size:22px;font-weight:300;letter-spacing:.3em;text-align:center;color:var(--ink);outline:none}.pr input:focus{border-color:var(--acc)}
-.pr button{height:52px;padding:0 20px;border-radius:14px;border:0;background:var(--acc);color:#fff;font:inherit;font-size:15px;letter-spacing:.12em}
-.pg.q{overflow:hidden}.pg.q>*{display:none}.pg.q:before{content:"";position:fixed;top:env(safe-area-inset-top);left:0;height:2px;width:40%;background:var(--acc);opacity:.7;animation:ld 1.4s ease-in-out infinite}@keyframes ld{0%{transform:translateX(-100%)}100%{transform:translateX(250%)}}
+h1{font-size:17px;font-weight:300;letter-spacing:.18em;margin:0 0 8px}.m{font-size:12px;color:var(--mut);font-weight:300;text-align:center;line-height:1.9;white-space:pre-line}
+.btn{margin-top:26px;height:52px;width:min(320px,100%);border-radius:14px;border:1px solid #D9D0C3;background:#fff;display:flex;align-items:center;justify-content:center;gap:10px;font:inherit;font-size:15px;color:var(--ink);text-decoration:none;letter-spacing:.12em}
+.nb{display:none;margin-top:14px}.num{margin:8px 0 2px;font-size:54px;font-weight:300;letter-spacing:.2em;padding-left:.2em;font-variant-numeric:tabular-nums;line-height:1.2}
+.picks{display:flex;gap:12px;margin-top:24px;width:min(320px,100%)}
+.picks button{flex:1;height:76px;border-radius:16px;border:1px solid #D9D0C3;background:#fff;font:inherit;font-size:28px;font-weight:300;letter-spacing:.12em;color:var(--ink);font-variant-numeric:tabular-nums}.picks button:disabled{color:#B9A9A0}
+.how{width:min(320px,100%);margin-top:18px;text-align:left}.how div{display:flex;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--line);font-size:13px;line-height:1.6}.how div:last-child{border-bottom:1px solid var(--line)}
+.how b{flex:none;width:26px;height:26px;border-radius:50%;border:1px solid var(--acc);color:var(--acc);font-weight:400;font-size:12px;display:flex;align-items:center;justify-content:center;letter-spacing:0}
+.how svg{flex:none;width:20px;height:20px;stroke:var(--ink);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.ok{display:none;width:56px;height:56px;border-radius:50%;border:1px solid var(--acc);align-items:center;justify-content:center;margin-bottom:24px}.ok svg{width:26px;height:26px;stroke:var(--acc);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.pg.q{overflow:hidden}.pg.q>*{display:none!important}.pg.q:before{content:"";position:fixed;top:env(safe-area-inset-top);left:0;height:2px;width:40%;background:var(--acc);opacity:.7;animation:ld 1.4s ease-in-out infinite}@keyframes ld{0%{transform:translateX(-100%)}100%{transform:translateX(250%)}}
 .ft{position:fixed;bottom:calc(14px + env(safe-area-inset-bottom));font-size:10px;color:#A39A8F;letter-spacing:.14em}
 @media (prefers-reduced-motion:reduce){.lg i,.pg.q:before{animation:none}}
 </style></head><body>
 <div class="pg" id="pg">
- <div class="lg"><i></i><i></i><img src="icon-192.png" alt="" width="56" height="56" style="border-radius:14px"></div>
- <h1 id="t">正在確認身分</h1><div class="m" id="m">約 1～2 秒</div>
- <a class="btn" id="b" href="#" style="display:none"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="6" fill="#06C755"/><path d="M12 5.5c-3.9 0-7 2.4-7 5.4 0 2.7 2.5 5 5.8 5.4l-.4 2.1c-.1.4.3.6.6.4l2.9-2.1c3-.4 5.1-2.7 5.1-5.8 0-3-3.1-5.4-7-5.4z" fill="#fff"/></svg>使用 LINE 登入</a>
- <div id="pn" class="pn" style="display:none"></div>
- <div id="pw" class="pw" style="display:none"><div class="m">LINE 驗證完成後，輸入畫面上的 6 位數字</div>
-  <div class="pr"><input id="pi" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="one-time-code" aria-label="6 位確認碼" placeholder="------"><button id="pb" type="button">確認</button></div>
-  <div class="m" id="pm" style="color:var(--acc);min-height:1.9em"></div></div>
- <div class="ft">© YENYANG　版權所有・試用版</div>
+ <div class="v" id="vLogin"><div class="lg"><i></i><i></i><img src="icon-192.png" alt="" width="56" height="56"></div>
+  <h1>YENYANG 營建管理平台</h1><div class="m" id="lm"></div>
+  <div class="nb" id="nb"><div class="m">你的核對數字</div><div class="num" id="ln"></div><div class="m">LINE 驗證完，在瀏覽器點同一個數字</div></div>
+  <a class="btn" id="b" href="#"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="6" fill="#06C755"/><path d="M12 5.5c-3.9 0-7 2.4-7 5.4 0 2.7 2.5 5 5.8 5.4l-.4 2.1c-.1.4.3.6.6.4l2.9-2.1c3-.4 5.1-2.7 5.1-5.8 0-3-3.1-5.4-7-5.4z" fill="#fff"/></svg>使用 LINE 登入</a>
+ </div>
+ <div class="v" id="vHow"><div class="lg"><i></i><i></i><img src="icon-192.png" alt="" width="56" height="56"></div>
+  <h1>把 YENYANG 加到主畫面</h1><div class="m">加好之後，從主畫面的圖示開啟並登入</div>
+  <div class="how">
+   <div><b>1</b><svg viewBox="0 0 24 24"><path d="M12 15V4M8 8l4-4 4 4M6 12v7h12v-7"/></svg><span>按下方的「分享」</span></div>
+   <div><b>2</b><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8v8M8 12h8"/></svg><span>選「加入主畫面」</span></div>
+   <div><b>3</b><svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="4"/><circle cx="12" cy="12" r="2"/></svg><span>回主畫面，點 YENYANG 圖示</span></div>
+  </div>
+ </div>
+ <div class="v" id="vPick"><h1>LINE 驗證完成</h1><div class="m">請點 YENYANG App 上顯示的那個數字</div><div class="picks" id="pk"></div></div>
+ <div class="v" id="vMsg"><div class="ok" id="mo"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div><h1 id="mt">正在確認身分</h1><div class="m" id="mm">約 2～3 秒</div></div>
+ <div class="ft">© YENYANG　版權所有</div>
 </div>
 <iframe id="app" title="YENYANG 營建管理平台" allow="fullscreen"></iframe>
 <script>
 var GAS="https://script.google.com/macros/s/AKfycbw7Sii_8LK8Uy9GZ6Fq7M3D4FxJ6oxnGEyYfiWIulsBQTtIYpmJWmj1yUyBUYP2WJWmlg/exec";
 var LINE_ID="2012266017";                   // 公開的 Channel ID（不是密鑰）
 var HERE=location.origin+location.pathname.replace(/index\.html$/,""); // 這個外殼的網址＝LINE 回呼網址
-var K="yySess",KS="yySt",KW="yyWait";
+var K="yySess",KS="yySt",KW="yyWait",PT=0;
+var IOS=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+var SA=navigator.standalone===true||!!(window.matchMedia&&matchMedia("(display-mode: standalone)").matches);
 function get(k){try{return localStorage.getItem(k)||""}catch(e){return""}}function put(k,v){try{v?localStorage.setItem(k,v):localStorage.removeItem(k)}catch(e){}}
 function exp(t){try{var b=t.split(".")[0].replace(/-/g,"+").replace(/_/g,"/");return JSON.parse(decodeURIComponent(escape(atob(b)))).e||0}catch(e){return 0}}
 function $(i){return document.getElementById(i)}
 function rnd(){var a=new Uint8Array(16);crypto.getRandomValues(a);var s="";for(var i=0;i<16;i++)s+=("0"+a[i].toString(16)).slice(-2);return s}
 // 這次登入的代號：只存在這個 App 裡，10 分鐘內重複使用（從 LINE 回來時畫面重開也還認得）
 function sid(){var v=get(KS).split("|");if(/^[a-f0-9]{32}$/.test(v[0])&&Date.now()-(+v[1]||0)<6e5)return v[0];var s=rnd();put(KS,s+"|"+Date.now());put(KW,"");return s}
-function done(t){put(KS,"");put(KW,"");put(K,t);goApp(t)}
-function login(msg){$("pg").className="pg";$("t").textContent="YENYANG 營建管理平台";$("m").textContent=msg||"第一次登入由建案管理者核准・登入保留 30 天";$("pn").style.display="none";
- var s=sid();$("b").href="https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id="+LINE_ID+"&redirect_uri="+encodeURIComponent(HERE)+"&state=shell."+s+"&scope=profile%20openid";$("b").style.display="flex";
- $("pw").style.display=get(KW)===s?"block":"none"}
-function nav(u){$("pg").className="pg q";$("pg").style.display="flex";$("b").style.display="none";$("pw").style.display="none";$("pn").style.display="none";var f=$("app");f.style.display="none";f.onload=function(){f.style.display="block";$("pg").style.display="none"};f.src=u}
+function num(s){return parseInt(s.slice(0,6),16)%90+10} // 核對數字：由代號算出來，伺服器用同一個算法核對
+function view(id){["vLogin","vHow","vPick","vMsg"].forEach(function(x){$(x).style.display=x===id?"flex":"none"});$("pg").className="pg";$("pg").style.display="flex";$("app").style.display="none"}
+function msg(t,m,ok){$("mt").textContent=t;$("mm").textContent=m||"";$("mo").style.display=ok?"flex":"none";view("vMsg")}
+function stopPoll(){if(PT){clearInterval(PT);PT=0}}
+function done(t){stopPoll();put(KS,"");put(KW,"");put(K,t);goApp(t)}
+function poll(){if(document.hidden)return;var v=get(KS).split("|"),s=v[0];if(!s||get(KW)!==s){stopPoll();return}
+ if(Date.now()-(+v[1]||0)>6e5){stopPoll();put(KS,"");put(KW,"");login("登入逾時，請再按一次。");return}
+ fetch(GAS+"?shellp="+s).then(function(r){return r.json()}).then(function(r){if(r&&r.ok&&r.tok&&PT)done(r.tok)}).catch(function(){})}
+function startPoll(){$("nb").style.display="block";if(PT)return;PT=setInterval(poll,3000);poll()}
+function login(m){stopPoll();if(IOS&&!SA){view("vHow");return}
+ var s=sid();$("lm").textContent=m||"第一次登入由建案管理者核准・登入保留 30 天";$("ln").textContent=num(s);
+ $("b").href="https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id="+LINE_ID+"&redirect_uri="+encodeURIComponent(HERE)+"&state=shell."+s+"&scope=profile%20openid";
+ $("nb").style.display=SA?"block":"none";view("vLogin");if(get(KW)===s)startPoll()}
+function nav(u){$("pg").className="pg q";$("pg").style.display="flex";var f=$("app");f.style.display="none";f.onload=function(){f.style.display="block";$("pg").style.display="none"};f.src=u}
 function goApp(t){nav(GAS+"?view=portal&shell=1&tk="+encodeURIComponent(t))}
-function pinGo(){var p=$("pi").value.replace(/\D/g,"");if(p.length!==6){$("pm").textContent="請輸入 6 位數字";return}
- $("pm").textContent="確認中…";fetch(GAS+"?shellp="+sid()+"&pin="+p).then(function(r){return r.json()}).then(function(r){
-  if(r&&r.ok&&r.tok){done(r.tok);return}
-  if(r&&r.gone){put(KS,"");put(KW,"");$("pi").value="";login("確認碼已失效，請重新按「使用 LINE 登入」。");return}
-  $("pm").textContent="數字不對，還可以試 "+((r&&r.left)||0)+" 次"}).catch(function(){$("pm").textContent="網路不穩，請再試一次。"})}
-$("b").addEventListener("click",function(){put(KW,sid());setTimeout(function(){$("pw").style.display="block";$("pm").textContent=""},800)});
-$("pb").addEventListener("click",pinGo);$("pi").addEventListener("keydown",function(e){if(e.key==="Enter")pinGo()});
+function picks(s,arr){var p=$("pk");p.innerHTML="";arr.forEach(function(n){var b=document.createElement("button");b.type="button";b.textContent=n;
+ b.onclick=function(){[].forEach.call(p.children,function(x){x.disabled=true});
+  fetch(GAS+"?shellc="+s+"&n="+encodeURIComponent(n)).then(function(r){return r.json()}).then(function(r){
+   if(r&&r.ok)msg("完成","請回到主畫面的 YENYANG App\n這一頁可以關掉",1);
+   else msg("這次登入已作廢",r&&r.gone?"等太久了。請回到 YENYANG App，再按一次「使用 LINE 登入」。":"數字不對。請回到 YENYANG App，看清楚數字後再按一次「使用 LINE 登入」。")
+  }).catch(function(){[].forEach.call(p.children,function(x){x.disabled=false})})};p.appendChild(b)});view("vPick")}
+$("b").addEventListener("click",function(){put(KW,sid());setTimeout(startPoll,800)});
+document.addEventListener("visibilitychange",function(){if(!document.hidden&&PT)poll()});
 window.addEventListener("message",function(e){var h="";try{h=new URL(e.origin).hostname}catch(_){return}if(!/\.googleusercontent\.com$/.test(h))return;var d=e.data||{};
- if(d.yy==="home"){var t=get(K);if(t&&exp(t)>Date.now())goApp(t);else{put(K,"");$("app").style.display="none";$("pg").style.display="flex";login("登入已失效，請重新登入。")}return}
+ if(d.yy==="home"){var t=get(K);if(t&&exp(t)>Date.now())goApp(t);else{put(K,"");login("登入已失效，請重新登入。")}return}
  if(d.yy==="open"&&typeof d.url==="string"&&d.url.indexOf("https://script.google.com/macros/s/")===0){var u=d.url+(d.url.indexOf("?")<0?"?":"&")+"shell=1";if(d.url.indexOf(GAS)===0)u+="&tk="+encodeURIComponent(get(K));nav(u);return}
- if(d.yy==="logout"||d.yy==="relogin"){put(K,"");$("app").style.display="none";$("pg").style.display="flex";login(d.yy==="logout"?"已登出。":"登入已失效，請重新登入。")}});
+ if(d.yy==="logout"||d.yy==="relogin"){put(K,"");login(d.yy==="logout"?"已登出。":"登入已失效，請重新登入。")}});
 (function(){var q=new URLSearchParams(location.search);
  if(q.get("code")){var code=q.get("code"),s=String(q.get("state")||"").replace(/^shell\./,""),mine=get(KS).split("|")[0];history.replaceState(null,"",HERE);
   if(!/^[a-f0-9]{32}$/.test(s)){login("登入逾時，請再按一次。");return}
-  var base=GAS+"?shellx="+encodeURIComponent(code)+"&ru="+encodeURIComponent(HERE);
-  if(mine&&mine===s){ // 同一個地方發起、同一個地方回來：直接登入
+  var base=GAS+"?shellx="+encodeURIComponent(code)+"&ru="+encodeURIComponent(HERE);msg("正在確認身分","約 2～3 秒");
+  if(mine&&mine===s){ // 同一個地方發起、同一個地方回來（電腦瀏覽器）：直接登入
    fetch(base).then(function(r){return r.json()}).then(function(r){if(r&&r.ok&&r.tok)done(r.tok);else login("登入失敗，請再試一次。")}).catch(function(){login("網路不穩，請再試一次。")});return}
-  // LINE 把人送到別的地方（iPhone：回到 Safari，不是主畫面的 App）：這裡只顯示確認碼，回 App 輸入才登入
+  // LINE 把人送到別的地方（iPhone：回到 Safari，不是主畫面的 App）：在這裡點對數字，App 那邊才會登入
   fetch(base+"&hand=1&hs="+s).then(function(r){return r.json()}).then(function(r){
-   if(r&&r.ok&&r.pin){$("t").textContent="LINE 驗證完成";$("m").textContent="請回到主畫面的 YENYANG App，輸入這組數字（5 分鐘內有效）";$("pn").textContent=r.pin;$("pn").style.display="block";$("b").style.display="none";$("pw").style.display="none"}
-   else{$("t").textContent="YENYANG 營建管理平台";$("m").textContent="驗證沒有完成，請回到 YENYANG App 再按一次「使用 LINE 登入」。"}}).catch(function(){$("m").textContent="網路不穩，請回到 YENYANG App 再按一次。"});return}
+   if(r&&r.ok&&r.picks&&r.picks.length)picks(s,r.picks);else msg("驗證沒有完成","請回到 YENYANG App，再按一次「使用 LINE 登入」。")
+  }).catch(function(){msg("網路不穩","請回到 YENYANG App，再按一次「使用 LINE 登入」。")});return}
  if(q.get("error")){history.replaceState(null,"",HERE);login("已取消登入。");return}
  var t=get(K);if(t&&exp(t)>Date.now())goApp(t);else{put(K,"");login()}})();
 if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js").catch(function(){});
