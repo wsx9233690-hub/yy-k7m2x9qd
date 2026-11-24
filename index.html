@@ -80,8 +80,10 @@ function picks(s,arr){var p=$("pk");p.innerHTML="";arr.forEach(function(n){var b
   }).catch(function(){[].forEach.call(p.children,function(x){x.disabled=false})})};p.appendChild(b)});view("vPick")}
 $("b").addEventListener("click",function(){put(KW,sid());setTimeout(startPoll,800)});
 document.addEventListener("visibilitychange",function(){if(!document.hidden&&PT)poll()});
-window.addEventListener("message",function(e){var h="";try{h=new URL(e.origin).hostname}catch(_){return}if(!/\.googleusercontent\.com$/.test(h))return;var d=e.data||{};
+window.addEventListener("message",function(e){var h="";try{h=new URL(e.origin).hostname}catch(_){return}var W=h==="watch.yenyang.app";if(!W&&!/\.googleusercontent\.com$/.test(h))return;var d=e.data||{};
  if(d.yy==="home"){var t=get(K);if(t&&exp(t)>Date.now())goApp(t);else{put(K,"");login("登入已失效，請重新登入。")}return}
+ if(W)return; // AI 監看頁只能叫 App 回首頁
+ if(d.yy==="open"&&typeof d.url==="string"&&/^https:\/\/watch\.yenyang\.app([\/?#]|$)/.test(d.url)){nav(d.url+(d.url.indexOf("?")<0?"?":"&")+"app=1");return} // AI 監看留在 App 裡
  if(d.yy==="open"&&typeof d.url==="string"&&d.url.indexOf("https://script.google.com/macros/s/")===0){var u=d.url+(d.url.indexOf("?")<0?"?":"&")+"shell=1";if(d.url.indexOf(GAS)===0)u+="&tk="+encodeURIComponent(get(K));nav(u);return}
  if(d.yy==="logout"||d.yy==="relogin"){put(K,"");login(d.yy==="logout"?"已登出。":"登入已失效，請重新登入。")}});
 (function(){var q=new URLSearchParams(location.search);
