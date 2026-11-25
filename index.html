@@ -65,7 +65,7 @@ function stopPoll(){if(PT){clearInterval(PT);PT=0}}
 function done(t){stopPoll();put(KS,"");put(KW,"");put(K,t);goApp(t)}
 function poll(){if(document.hidden)return;var v=get(KS).split("|"),s=v[0];if(!s||get(KW)!==s){stopPoll();return}
  if(Date.now()-(+v[1]||0)>6e5){stopPoll();put(KS,"");put(KW,"");login("登入逾時，請再按一次。");return}
- if(PF&&Date.now()-PF<8e3)return;PF=Date.now();fetch(GAS+"?shellp="+s).then(function(r){return r.json()}).then(function(r){PF=0;if(r&&r.ok&&r.tok&&PT)done(r.tok)}).catch(function(){PF=0})}
+ if(PF&&Date.now()-PF<8e3)return;PF=Date.now();fetch(GAS+"?shellp="+s).then(function(r){return r.json()}).then(function(r){PF=0;if(r&&r.ok&&r.tok&&PT)done(r.tok);else if(r&&r.gone&&PT&&get(KS).split("|")[0]===s){stopPoll();put(KS,"");put(KW,"");$("cp").textContent="";login("剛才的核對碼已作廢，已換成新的。\n請再按一次「使用 LINE 登入」。")}}).catch(function(){PF=0})}
 function startPoll(){$("nb").style.display="block";if(PT)return;PT=setInterval(poll,1500);poll()}
 function login(m){stopPoll();if(IOS&&!SA){view("vHow");return}
  var s=sid();$("lm").textContent=m||"第一次登入由建案管理者核准・有使用就自動延長";$("ln").textContent=num(s);
