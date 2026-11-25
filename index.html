@@ -24,11 +24,12 @@ h1{font-size:17px;font-weight:300;letter-spacing:.18em;margin:0 0 8px}.m{font-si
 .pg.q{overflow:hidden}.pg.q>*{display:none!important}.pg.q:before{content:"";position:fixed;top:env(safe-area-inset-top);left:0;height:2px;width:40%;background:var(--acc);opacity:.7;animation:ld 1.4s ease-in-out infinite}@keyframes ld{0%{transform:translateX(-100%)}100%{transform:translateX(250%)}}
 .ft{position:fixed;bottom:calc(14px + env(safe-area-inset-bottom));font-size:10px;color:#A39A8F;letter-spacing:.14em}
 @media (prefers-reduced-motion:reduce){.lg i,.pg.q:before{animation:none}}
+.num{font-size:40px;letter-spacing:.14em;padding-left:.14em;white-space:nowrap}.cells{position:relative;display:flex;gap:7px;margin-top:22px}.cells b{width:40px;height:54px;border-radius:10px;border:1px solid #D9D0C3;background:#fff;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:300;font-variant-numeric:tabular-nums}.cells b.c{border-color:var(--acc);box-shadow:0 0 0 3px rgba(193,95,60,.12)}.cells b.g{margin-left:8px}.cells input{position:absolute;inset:0;width:100%;height:100%;opacity:0;font-size:16px;border:0;caret-color:transparent}.er{font-size:12px;color:#B5462A;margin-top:12px;min-height:18px;letter-spacing:.08em}.btn.dk{background:var(--ink);color:#fff;border-color:var(--ink)}.btn:disabled{opacity:.35}
 </style></head><body>
 <div class="pg" id="pg">
  <div class="v" id="vLogin"><div class="lg"><i></i><i></i><img src="icon-192.png" alt="" width="56" height="56"></div>
   <h1>YENYANG 營建管理平台</h1><div class="m" id="lm"></div>
-  <div class="nb" id="nb"><div class="m">你的核對數字</div><div class="num" id="ln"></div><div class="m">LINE 驗證完，在瀏覽器點同一個數字</div></div>
+  <div class="nb" id="nb"><div class="m">你的核對碼</div><div class="num" id="ln"></div><div class="m">LINE 驗證完，在瀏覽器輸入這 6 碼</div></div>
   <a class="btn" id="b" href="#"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="6" fill="#06C755"/><path d="M12 5.5c-3.9 0-7 2.4-7 5.4 0 2.7 2.5 5 5.8 5.4l-.4 2.1c-.1.4.3.6.6.4l2.9-2.1c3-.4 5.1-2.7 5.1-5.8 0-3-3.1-5.4-7-5.4z" fill="#fff"/></svg>使用 LINE 登入</a>
  </div>
  <div class="v" id="vHow"><div class="lg"><i></i><i></i><img src="icon-192.png" alt="" width="56" height="56"></div>
@@ -39,7 +40,7 @@ h1{font-size:17px;font-weight:300;letter-spacing:.18em;margin:0 0 8px}.m{font-si
    <div><b>3</b><svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="4"/><circle cx="12" cy="12" r="2"/></svg><span>回主畫面，點 YENYANG 圖示</span></div>
   </div>
  </div>
- <div class="v" id="vPick"><h1>LINE 驗證完成</h1><div class="m">請點 YENYANG App 上顯示的那個數字</div><div class="picks" id="pk"></div></div>
+ <div class="v" id="vPick"><h1>LINE 驗證完成</h1><div class="m">請輸入 YENYANG App 上顯示的 6 碼</div><div class="cells" id="pk"><b></b><b></b><b></b><b class="g"></b><b></b><b></b><input id="ci" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="off" aria-label="6 碼"></div><div class="er" id="ce"></div><button class="btn dk" id="cb" type="button" disabled>確認</button></div>
  <div class="v" id="vMsg"><div class="ok" id="mo"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div><h1 id="mt">正在確認身分</h1><div class="m" id="mm">約 2～3 秒</div></div>
  <div class="ft">© YENYANG　版權所有</div>
 </div>
@@ -57,7 +58,7 @@ function $(i){return document.getElementById(i)}
 function rnd(){var a=new Uint8Array(16);crypto.getRandomValues(a);var s="";for(var i=0;i<16;i++)s+=("0"+a[i].toString(16)).slice(-2);return s}
 // 這次登入的代號：只存在這個 App 裡，10 分鐘內重複使用（從 LINE 回來時畫面重開也還認得）
 function sid(){var v=get(KS).split("|");if(/^[a-f0-9]{32}$/.test(v[0])&&Date.now()-(+v[1]||0)<6e5)return v[0];var s=rnd();put(KS,s+"|"+Date.now());put(KW,"");return s}
-function num(s){return parseInt(s.slice(0,6),16)%90+10} // 核對數字：由代號算出來，伺服器用同一個算法核對
+function num(s){var n=String(parseInt(s.slice(0,8),16)%900000+100000);return n.slice(0,3)+" "+n.slice(3)} // 核對數字：由代號算出來，伺服器用同一個算法核對
 function view(id){["vLogin","vHow","vPick","vMsg"].forEach(function(x){$(x).style.display=x===id?"flex":"none"});$("pg").className="pg";$("pg").style.display="flex";$("app").style.display="none"}
 function msg(t,m,ok){$("mt").textContent=t;$("mm").textContent=m||"";$("mo").style.display=ok?"flex":"none";view("vMsg")}
 function stopPoll(){if(PT){clearInterval(PT);PT=0}}
@@ -67,17 +68,24 @@ function poll(){if(document.hidden)return;var v=get(KS).split("|"),s=v[0];if(!s|
  fetch(GAS+"?shellp="+s).then(function(r){return r.json()}).then(function(r){if(r&&r.ok&&r.tok&&PT)done(r.tok)}).catch(function(){})}
 function startPoll(){$("nb").style.display="block";if(PT)return;PT=setInterval(poll,3000);poll()}
 function login(m){stopPoll();if(IOS&&!SA){view("vHow");return}
- var s=sid();$("lm").textContent=m||"第一次登入由建案管理者核准・登入保留 30 天";$("ln").textContent=num(s);
+ var s=sid();$("lm").textContent=m||"第一次登入由建案管理者核准・有使用就自動延長";$("ln").textContent=num(s);
  $("b").href="https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id="+LINE_ID+"&redirect_uri="+encodeURIComponent(HERE)+"&state=shell."+s+"&scope=profile%20openid";
  $("nb").style.display=SA?"block":"none";view("vLogin");if(get(KW)===s)startPoll()}
 function nav(u){$("pg").className="pg q";$("pg").style.display="flex";var f=$("app");f.style.display="none";f.onload=function(){f.style.display="block";$("pg").style.display="none"};f.src=u}
 function goApp(t){nav(GAS+"?view=portal&shell=1&tk="+encodeURIComponent(t))}
-function picks(s,arr){var p=$("pk");p.innerHTML="";arr.forEach(function(n){var b=document.createElement("button");b.type="button";b.textContent=n;
- b.onclick=function(){[].forEach.call(p.children,function(x){x.disabled=true});
-  fetch(GAS+"?shellc="+s+"&n="+encodeURIComponent(n)).then(function(r){return r.json()}).then(function(r){
-   if(r&&r.ok)msg("完成","請回到主畫面的 YENYANG App\n這一頁可以關掉",1);
-   else msg("這次登入已作廢",r&&r.gone?"等太久了。請回到 YENYANG App，再按一次「使用 LINE 登入」。":"數字不對。請回到 YENYANG App，看清楚數字後再按一次「使用 LINE 登入」。")
-  }).catch(function(){[].forEach.call(p.children,function(x){x.disabled=false})})};p.appendChild(b)});view("vPick")}
+function picks(s){var ci=$("ci"),cb=$("cb"),ce=$("ce"),bx=$("pk").getElementsByTagName("b"),busy=0;
+ function draw(){var v=ci.value.replace(/\D/g,"").slice(0,6);if(ci.value!==v)ci.value=v;for(var i=0;i<6;i++){bx[i].textContent=v[i]||"";bx[i].className=(i===3?"g":"")+(i===v.length?" c":"")}cb.disabled=v.length<6||!!busy;if(v.length===6&&!busy)send()}
+ function send(){var v=ci.value;busy=1;cb.disabled=true;ce.textContent="";
+  fetch(GAS+"?shellc="+s+"&n="+v).then(function(r){return r.json()}).then(function(r){busy=0;
+   if(r&&r.ok){ci.blur();msg("完成","請回到主畫面的 YENYANG App\n這一頁可以關掉",1);return}
+   if(r&&r.left){ci.value="";ce.textContent="號碼不對，還可以再試 "+r.left+" 次";draw();ci.focus();return}
+   msg("這次登入已作廢",r&&r.gone?"等太久了。請回到 YENYANG App，再按一次「使用 LINE 登入」。":"錯太多次了。請回到 YENYANG App，再按一次「使用 LINE 登入」。")
+  }).catch(function(){busy=0;ce.textContent="網路不穩，請再按一次確認";cb.disabled=false})}
+ ci.value="";ci.oninput=draw;cb.onclick=function(){if(ci.value.length===6&&!busy)send()};$("pk").onclick=function(){ci.focus()};view("vPick");draw();setTimeout(function(){ci.focus()},300)}
+// 11/25 自動續期：App 打開時（12 小時內最多一次）換一張新的 30 天登入證明；停用或超過 180 天就要重新登入
+var KR="yyRen";function renew(){var t=get(K);if(!t)return;if(Date.now()-(+get(KR)||0)<432e5)return;put(KR,String(Date.now()));
+ fetch(GAS+"?shellr="+encodeURIComponent(t)).then(function(r){return r.json()}).then(function(r){if(r&&r.ok&&r.tok){if(get(K)===t)put(K,r.tok)}else if(r&&r.dead){put(K,"");put(KR,"");login("登入已過期，請重新登入。")}}).catch(function(){})}
+document.addEventListener("visibilitychange",function(){if(!document.hidden&&get(K))renew()});
 $("b").addEventListener("click",function(){put(KW,sid());setTimeout(startPoll,800)});
 document.addEventListener("visibilitychange",function(){if(!document.hidden&&PT)poll()});
 window.addEventListener("message",function(e){var h="";try{h=new URL(e.origin).hostname}catch(_){return}var W=h==="watch.yenyang.app";if(!W&&!/\.googleusercontent\.com$/.test(h))return;var d=e.data||{};
@@ -94,9 +102,9 @@ window.addEventListener("message",function(e){var h="";try{h=new URL(e.origin).h
    fetch(base).then(function(r){return r.json()}).then(function(r){if(r&&r.ok&&r.tok)done(r.tok);else login("登入失敗，請再試一次。")}).catch(function(){login("網路不穩，請再試一次。")});return}
   // LINE 把人送到別的地方（iPhone：回到 Safari，不是主畫面的 App）：在這裡點對數字，App 那邊才會登入
   fetch(base+"&hand=1&hs="+s).then(function(r){return r.json()}).then(function(r){
-   if(r&&r.ok&&r.picks&&r.picks.length)picks(s,r.picks);else msg("驗證沒有完成","請回到 YENYANG App，再按一次「使用 LINE 登入」。")
+   if(r&&r.ok&&r.six)picks(s);else msg("驗證沒有完成","請回到 YENYANG App，再按一次「使用 LINE 登入」。")
   }).catch(function(){msg("網路不穩","請回到 YENYANG App，再按一次「使用 LINE 登入」。")});return}
  if(q.get("error")){history.replaceState(null,"",HERE);login("已取消登入。");return}
- var t=get(K);if(t&&exp(t)>Date.now())goApp(t);else{put(K,"");login()}})();
+ var t=get(K);if(t&&exp(t)>Date.now()){goApp(t);renew()}else{put(K,"");login()}})();
 if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js").catch(function(){});
 </script></body></html>
