@@ -55,6 +55,10 @@ var SA=navigator.standalone===true||!!(window.matchMedia&&matchMedia("(display-m
 function get(k){try{return localStorage.getItem(k)||""}catch(e){return""}}function put(k,v){try{v?localStorage.setItem(k,v):localStorage.removeItem(k)}catch(e){}}
 function exp(t){try{var b=t.split(".")[0].replace(/-/g,"+").replace(/_/g,"/");return JSON.parse(decodeURIComponent(escape(atob(b)))).e||0}catch(e){return 0}}
 function $(i){return document.getElementById(i)}
+// 11/26 工務所電視免登入：電視在工地內網開監看電腦的入口，帶著 12 小時登入證明過來（#tv=）；過期就自動回那個入口重領，不走 LINE
+var KT="yyTv",TVG=/^http:\/\/(192\.168|10)\.[0-9.]{3,11}:[0-9]{2,5}\/tv$/;
+function pay(t){try{var b=t.split(".")[0].replace(/-/g,"+").replace(/_/g,"/");return JSON.parse(decodeURIComponent(escape(atob(b))))||{}}catch(e){return{}}}
+function tvBack(){var g=get(KT);if(!TVG.test(g))return false;put(K,"");location.replace(g);return true}
 function rnd(){var a=new Uint8Array(16);crypto.getRandomValues(a);var s="";for(var i=0;i<16;i++)s+=("0"+a[i].toString(16)).slice(-2);return s}
 // 這次登入的代號：只存在這個 App 裡，10 分鐘內重複使用（從 LINE 回來時畫面重開也還認得）
 function sid(){var v=get(KS).split("|");if(/^[a-f0-9]{32}$/.test(v[0])&&Date.now()-(+v[1]||0)<6e5)return v[0];var s=rnd();put(KS,s+"|"+Date.now());put(KW,"");return s}
@@ -83,19 +87,22 @@ function picks(s){var ci=$("ci"),cb=$("cb"),ce=$("ce"),bx=$("pk").getElementsByT
   }).catch(function(){busy=0;ce.textContent="網路不穩，請再按一次確認";cb.disabled=false})}
  ci.value="";ci.oninput=draw;cb.onclick=function(){if(ci.value.length===6&&!busy)send()};$("pk").onclick=function(){ci.focus()};$("pb").onclick=function(){if(!navigator.clipboard||!navigator.clipboard.readText){ce.textContent="請長按格子，選「貼上」";ci.focus();return}navigator.clipboard.readText().then(function(t){ci.value=String(t||"").replace(/\D/g,"").slice(0,6);ce.textContent=ci.value.length<6?"剪貼簿裡沒有 6 碼，請自己輸入":"";draw()}).catch(function(){ce.textContent="請長按格子，選「貼上」";ci.focus()})};view("vPick");draw();setTimeout(function(){ci.focus()},300)}
 // 11/25 自動續期：App 打開時（12 小時內最多一次）換一張新的 30 天登入證明；停用或超過 180 天就要重新登入
-var KR="yyRen";function renew(){var t=get(K);if(!t)return;if(Date.now()-(+get(KR)||0)<432e5)return;put(KR,String(Date.now()));
+var KR="yyRen";function renew(){var t=get(K);if(!t)return;if(pay(t).tv===1)return;if(Date.now()-(+get(KR)||0)<432e5)return;put(KR,String(Date.now()));
  fetch(GAS+"?shellr="+encodeURIComponent(t)).then(function(r){return r.json()}).then(function(r){if(r&&r.ok&&r.tok){if(get(K)===t)put(K,r.tok)}else if(r&&r.dead){put(K,"");put(KR,"");login("登入已過期，請重新登入。")}}).catch(function(){})}
 document.addEventListener("visibilitychange",function(){if(!document.hidden&&get(K))renew()});
 $("b").addEventListener("click",function(){var s=sid();put(KW,s);try{navigator.clipboard.writeText(num(s).replace(" ","")).then(function(){$("cp").textContent="✓ 已複製核對碼"}).catch(function(){})}catch(e){}setTimeout(startPoll,800)});
 document.addEventListener("visibilitychange",function(){if(!document.hidden&&PT)poll()});
 window.addEventListener("focus",function(){if(PT)poll()});window.addEventListener("pageshow",function(){if(PT)poll()}); // 11/25：從 Safari 切回 App 立刻去領登入證明
 window.addEventListener("message",function(e){var h="";try{h=new URL(e.origin).hostname}catch(_){return}var W=h==="watch.yenyang.app";if(!W&&!/\.googleusercontent\.com$/.test(h))return;var d=e.data||{};
- if(d.yy==="home"){var t=get(K);if(t&&exp(t)>Date.now())goApp(t);else{put(K,"");login("登入已失效，請重新登入。")}return}
+ if(d.yy==="home"){var t=get(K);if(t&&exp(t)>Date.now())goApp(t);else if(!tvBack()){put(K,"");login("登入已失效，請重新登入。")}return}
  if(W)return; // AI 監看頁只能叫 App 回首頁
  if(d.yy==="open"&&typeof d.url==="string"&&/^https:\/\/watch\.yenyang\.app([\/?#]|$)/.test(d.url)){nav(d.url+(d.url.indexOf("?")<0?"?":"&")+"app=1");return} // AI 監看留在 App 裡
  if(d.yy==="open"&&typeof d.url==="string"&&d.url.indexOf("https://script.google.com/macros/s/")===0){var u=d.url+(d.url.indexOf("?")<0?"?":"&")+"shell=1";if(d.url.indexOf(GAS)===0)u+="&tk="+encodeURIComponent(get(K));nav(u);return}
- if(d.yy==="logout"||d.yy==="relogin"){put(K,"");login(d.yy==="logout"?"已登出。":"登入已失效，請重新登入。")}});
+ if(d.yy==="logout"||d.yy==="relogin"){if(d.yy==="logout")put(KT,"");else if(tvBack())return;put(K,"");login(d.yy==="logout"?"已登出。":"登入已失效，請重新登入。")}});
 (function(){var q=new URLSearchParams(location.search);
+ var hm=/^#tv=([^&]+)&g=([^&]+)$/.exec(location.hash||"");
+ if(hm){var tt="",gg="";try{tt=decodeURIComponent(hm[1]);gg=decodeURIComponent(hm[2])}catch(e){}history.replaceState(null,"",HERE);
+  if(/^[A-Za-z0-9_\-=]+\.[A-Za-z0-9_\-=+\/]+$/.test(tt)&&pay(tt).tv===1&&exp(tt)>Date.now()&&TVG.test(gg)){put(K,tt);put(KT,gg);goApp(tt);return}}
  if(q.get("code")){var code=q.get("code"),s=String(q.get("state")||"").replace(/^shell\./,""),mine=get(KS).split("|")[0];history.replaceState(null,"",HERE);
   if(!/^[a-f0-9]{32}$/.test(s)){login("登入逾時，請再按一次。");return}
   var base=GAS+"?shellx="+encodeURIComponent(code)+"&ru="+encodeURIComponent(HERE);msg("正在確認身分","約 2～3 秒");
@@ -106,6 +113,7 @@ window.addEventListener("message",function(e){var h="";try{h=new URL(e.origin).h
    if(r&&r.ok&&r.six)picks(s);else msg("驗證沒有完成","請回到 YENYANG App，再按一次「使用 LINE 登入」。")
   }).catch(function(){msg("網路不穩","請回到 YENYANG App，再按一次「使用 LINE 登入」。")});return}
  if(q.get("error")){history.replaceState(null,"",HERE);login("已取消登入。");return}
- var t=get(K);if(t&&exp(t)>Date.now()){goApp(t);renew()}else{put(K,"");login()}})();
+ var t=get(K);if(t&&exp(t)>Date.now()){goApp(t);renew()}else if(!tvBack()){put(K,"");login()}})();
+setInterval(function(){var t=get(K);if(t&&pay(t).tv===1&&exp(t)-Date.now()<12e4)tvBack()},6e4); // 電視：快到期前自己回內網入口重領
 if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js").catch(function(){});
 </script></body></html>
